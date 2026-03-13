@@ -1,0 +1,11 @@
+{
+  "name": "get_sample_info",
+  "description": "Get sample device information. Returns device name, OS version, and uptime.",
+  "category": "Device Info",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "entry_point": "skill.py"
+}

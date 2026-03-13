@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages"
+    api-version="10.0"
+    package="org.tizen.tizenclaw-skill-plugin-sample"
+    version="1.0.0"
+    res-type="tizenclaw.skill.plugin"
+    res-version="1.0.0" lib="true">
+    <label>TizenClaw Skill Plugin Sample</label>
+    <description>Sample skill plugin providing device info tools for TizenClaw</description>
+    <metadata key="http://tizen.org/metadata/tizenclaw/skill" value="get_sample_info|get_sample_status"/>
+</manifest>

@@ -1,0 +1,16 @@
+{
+  "name": "get_sample_status",
+  "description": "Get sample system status including CPU load, memory usage, and disk usage.",
+  "category": "Device Info",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "verbose": {
+        "type": "boolean",
+        "description": "If true, include detailed per-CPU stats"
+      }
+    },
+    "required": []
+  },
+  "entry_point": "skill.py"
+}
