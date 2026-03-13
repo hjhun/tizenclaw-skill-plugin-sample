@@ -1,0 +1,12 @@
+{
+  "name": "get_sample_time_node",
+  "description": "Get system time information using Node.js. Returns current ISO timestamp and timezone.",
+  "category": "Device Info",
+  "runtime": "node",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "entry_point": "skill.js"
+}

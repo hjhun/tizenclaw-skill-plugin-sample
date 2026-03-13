@@ -1,0 +1,13 @@
+{
+  "name": "get_sample_load_native",
+  "description": "Get system load averages using a native C++ binary. Returns 1min, 5min, and 15min load averages.",
+  "category": "Device Info",
+  "runtime": "native",
+  "language": "cpp",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "entry_point": "get_sample_load_native"
+}

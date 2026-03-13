@@ -7,5 +7,5 @@
     res-version="1.0.0" lib="true">
     <label>TizenClaw Skill Plugin Sample</label>
     <description>Sample skill plugin providing device info tools for TizenClaw</description>
-    <metadata key="http://tizen.org/metadata/tizenclaw/skill" value="get_sample_info|get_sample_status"/>
+    <metadata key="http://tizen.org/metadata/tizenclaw/skill" value="get_sample_info|get_sample_status|get_sample_time_node|get_sample_load_native"/>
 </manifest>

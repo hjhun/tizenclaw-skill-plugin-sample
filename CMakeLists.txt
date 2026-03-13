@@ -15,15 +15,33 @@
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
-PROJECT(tizenclaw-skill-plugin-sample LANGUAGES NONE)
+PROJECT(tizenclaw-skill-plugin-sample)
 
 # RPK app directory
 SET(RPK_APP_DIR /usr/apps/org.tizen.tizenclaw-skill-plugin-sample)
 
-# Install skill directories under lib/
+# Build native C++ skill binary
+ADD_EXECUTABLE(get_sample_load_native
+  lib/get_sample_load_native/main.cc
+)
+
+# Install Python skills
 INSTALL(DIRECTORY lib/get_sample_info/
     DESTINATION ${RPK_APP_DIR}/lib/get_sample_info
 )
 INSTALL(DIRECTORY lib/get_sample_status/
     DESTINATION ${RPK_APP_DIR}/lib/get_sample_status
+)
+
+# Install Node.js skill
+INSTALL(DIRECTORY lib/get_sample_time_node/
+    DESTINATION ${RPK_APP_DIR}/lib/get_sample_time_node
+)
+
+# Install Native C++ skill (manifest + binary)
+INSTALL(FILES lib/get_sample_load_native/manifest.json
+    DESTINATION ${RPK_APP_DIR}/lib/get_sample_load_native
+)
+INSTALL(TARGETS get_sample_load_native
+    DESTINATION ${RPK_APP_DIR}/lib/get_sample_load_native
 )

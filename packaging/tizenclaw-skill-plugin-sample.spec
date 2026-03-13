@@ -1,6 +1,6 @@
 Name:       tizenclaw-skill-plugin-sample
 Summary:    TizenClaw Skill Plugin Sample
-Version:    1.0.0
+Version:    1.1.0
 Release:    1
 Group:      System/Service
 License:    Apache-2.0
@@ -8,9 +8,11 @@ Source0:    %{name}-%{version}.tar.gz
 Source1001: tizen-manifest.xml
 Source1002: %{name}.manifest
 BuildRequires:  cmake
+BuildRequires:  gcc-c++
 
 %description
 Sample skill plugin for TizenClaw providing device info tools.
+Demonstrates Python, Node.js, and native C++ skill runtimes.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -43,3 +45,7 @@ cp tizen-manifest.xml %{buildroot}/usr/apps/org.tizen.tizenclaw-skill-plugin-sam
 /usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_info/skill.py
 /usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_status/manifest.json
 /usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_status/skill.py
+/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_time_node/manifest.json
+/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_time_node/skill.js
+/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_load_native/manifest.json
+%attr(755,root,root) /usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/get_sample_load_native/get_sample_load_native
