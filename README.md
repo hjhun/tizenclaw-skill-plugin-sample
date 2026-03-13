@@ -1,48 +1,48 @@
 # TizenClaw Skill Plugin Sample
 
-TizenClaw에 RPK를 통해 스킬(Tool)을 주입하는 샘플 프로젝트입니다.
+A sample project that injects skills (tools) into TizenClaw via RPK (Resource Package).
 
-## 구조
+## Structure
 
 ```
 tizenclaw-skill-plugin-sample/
 ├── CMakeLists.txt
 ├── packaging/
-│   ├── tizen-manifest.xml          # 메타데이터 선언
+│   ├── tizen-manifest.xml          # Metadata declaration
 │   ├── tizenclaw-skill-plugin-sample.spec
 │   └── tizenclaw-skill-plugin-sample.manifest
 ├── lib/
-│   ├── get_sample_info/            # 스킬 ①
-│   │   ├── manifest.json           # 스킬 정의 (LLM tool schema)
-│   │   └── skill.py                # 스킬 구현
-│   └── get_sample_status/          # 스킬 ②
+│   ├── get_sample_info/            # Skill ①
+│   │   ├── manifest.json           # Skill definition (LLM tool schema)
+│   │   └── skill.py                # Skill implementation
+│   └── get_sample_status/          # Skill ②
 │       ├── manifest.json
 │       └── skill.py
 └── README.md
 ```
 
-## 메타데이터 선언
+## Metadata Declaration
 
-`tizen-manifest.xml`에서 다음과 같이 스킬을 등록합니다:
+Skills are registered in `tizen-manifest.xml` as follows:
 
 ```xml
 <metadata key="http://tizen.org/metadata/tizenclaw/skill"
           value="get_sample_info|get_sample_status"/>
 ```
 
-- **key**: `http://tizen.org/metadata/tizenclaw/skill` (고정)
-- **value**: `lib/` 아래의 스킬 디렉토리 이름을 `|`로 구분
+- **key**: `http://tizen.org/metadata/tizenclaw/skill` (fixed)
+- **value**: Skill directory names under `lib/`, separated by `|`
 
-### 대안: 여러 metadata 항목으로 선언
+### Alternative: Declaring with Multiple Metadata Entries
 
 ```xml
 <metadata key="http://tizen.org/metadata/tizenclaw/skill" value="get_sample_info"/>
 <metadata key="http://tizen.org/metadata/tizenclaw/skill" value="get_sample_status"/>
 ```
 
-## 스킬 manifest.json 포맷
+## Skill manifest.json Format
 
-각 스킬의 `manifest.json`은 LLM tool schema를 따릅니다:
+Each skill's `manifest.json` follows the LLM tool schema:
 
 ```json
 {
@@ -58,15 +58,25 @@ tizenclaw-skill-plugin-sample/
 }
 ```
 
-## 빌드 및 배포
+## Build & Deploy
 
 ```bash
-gbs build -A armv7l --include-all
+# Full build and deploy pipeline
+./deploy.sh
+
+# Quick rebuild (skip build-env init)
+./deploy.sh -n
+
+# Deploy existing RPM (skip build)
+./deploy.sh -s
+
+# See all options
+./deploy.sh --help
 ```
 
-패키지가 설치되면 TizenClaw `SkillPluginManager`가 자동으로
-스킬 디렉토리를 감지하고 LLM에 tool로 등록합니다.
+Once the package is installed, the TizenClaw `SkillPluginManager` automatically
+detects the skill directories and registers them as tools for the LLM.
 
-## 라이선스
+## License
 
-Apache-2.0
+[Apache-2.0](LICENSE)
