@@ -10,8 +10,9 @@ This guide explains how to create RPK skill plugins for [TizenClaw](https://gith
 
 A skill plugin consists of one or more **skill directories**, each containing:
 
-1. **manifest.json** — An LLM tool schema that defines the skill's name, description, parameters, and runtime
+1. **SKILL.md** — An Anthropic standard skill descriptor with `name` and `description` in YAML frontmatter and Markdown documentation
 2. **Entry point** — A script (`skill.py`, `skill.js`) or native binary that executes the skill logic
+3. **manifest.json** — (Optional) Legacy JSON schema fallback
 
 TizenClaw's `SkillPluginManager` discovers installed skill plugins through Tizen's metadata system and registers them as tools for the LLM agent.
 
@@ -28,7 +29,7 @@ TizenClaw's `SkillPluginManager` discovers installed skill plugins through Tizen
 ```
 RPK installed → unified-backend registers → pkgmgr event
 → SkillPluginManager scans metadata
-→ reads manifest.json from each skill directory
+→ reads SKILL.md (or manifest.json fallback) from each skill directory
 → registers tool schema with LLM agent
 → LLM invokes via runtime executor
 ```
@@ -44,44 +45,47 @@ Create a new directory under `lib/` with the skill files:
 ```
 lib/
 └── my_new_skill/
-    ├── manifest.json
+    ├── SKILL.md          # Anthropic standard descriptor
     └── skill.py         # or skill.js, or main.cc
 ```
 
-### 2. Write manifest.json
+### 2. Write SKILL.md (Anthropic Standard)
 
-The manifest defines how the LLM discovers and interacts with your skill:
+The `SKILL.md` defines how the LLM discovers and understands your skill. Use the Anthropic standard format — only `name` and `description` in YAML frontmatter, with Markdown documentation in the body:
 
-```json
-{
-  "name": "my_new_skill",
-  "description": "A clear description of what this skill does and what it returns.",
-  "category": "Your Category",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "example_param": {
-        "type": "string",
-        "description": "Description of the parameter"
-      }
-    },
-    "required": []
-  },
-  "entry_point": "skill.py"
-}
+```markdown
+---
+name: my_new_skill
+description: A clear description of what this skill does and what it returns
+---
+
+# My New Skill
+
+A clear description of what this skill does and what it returns.
+
+## When to Use
+
+Use this skill when the user asks about...
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `example_param` | string | No | Description of the parameter |
+
+## Output
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `key` | string | Description of output field |
 ```
 
-**Key fields:**
+**Frontmatter fields:**
 
 | Field | Required | Description |
 |-------|----------|-------------|
 | `name` | Yes | Unique skill name (must match the directory name) |
 | `description` | Yes | Clear description for the LLM to understand when to use this skill |
-| `category` | Yes | Grouping category (e.g., `"Device Info"`, `"Network"`) |
-| `parameters` | Yes | JSON Schema for input parameters |
-| `entry_point` | Yes | Script filename or binary name |
-| `runtime` | No | `"python"` (default), `"node"`, or `"native"` |
-| `language` | No | Required for native runtime: `"cpp"` or `"c"` |
 
 ### 3. Implement the Skill
 
@@ -145,7 +149,7 @@ main();
 
 #### Native C++ Skill
 
-Add `"runtime": "native"` and `"language": "cpp"` to `manifest.json`. Set `"entry_point"` to the binary name:
+For native skills, ensure the `SKILL.md` specifies the binary context:
 
 ```cpp
 #include <cstdio>
@@ -182,8 +186,8 @@ ADD_EXECUTABLE(my_new_skill
   lib/my_new_skill/main.cc
 )
 
-# Install manifest + binary
-INSTALL(FILES lib/my_new_skill/manifest.json
+# Install SKILL.md + binary
+INSTALL(FILES lib/my_new_skill/SKILL.md
     DESTINATION ${RPK_APP_DIR}/lib/my_new_skill
 )
 INSTALL(TARGETS my_new_skill
@@ -212,11 +216,11 @@ Add the new skill's files to the `%files` section in `packaging/tizenclaw-skill-
 
 ```spec
 # For Python / Node.js skills
-/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/my_new_skill/manifest.json
+/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/my_new_skill/SKILL.md
 /usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/my_new_skill/skill.py
 
 # For native skills (set executable permission)
-/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/my_new_skill/manifest.json
+/usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/my_new_skill/SKILL.md
 %attr(755,root,root) /usr/apps/org.tizen.tizenclaw-skill-plugin-sample/lib/my_new_skill/my_new_skill
 ```
 
@@ -251,14 +255,14 @@ args = json.loads(os.environ.get("CLAW_ARGS", "{}"))
 const args = JSON.parse(process.env.CLAW_ARGS || '{}');
 ```
 
-### manifest.json Best Practices
+### SKILL.md Best Practices
 
-The `manifest.json` is what the LLM reads to understand your skill. Write descriptions that are:
+The `SKILL.md` is what the LLM reads to understand your skill. Write descriptions that are:
 
 - **Specific** — Tell the LLM exactly what data is returned
 - **Action-oriented** — Start with a verb (e.g., "Get", "Query", "Check")
-- **Context-rich** — Include return format hints in the description
-- **Parameter-complete** — Document all parameters with clear descriptions and types
+- **Context-rich** — Include "When to Use" section with example scenarios
+- **Parameter-complete** — Document all parameters with clear descriptions and types in a table
 
 ### Security
 

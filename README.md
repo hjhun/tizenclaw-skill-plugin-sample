@@ -19,7 +19,7 @@
 
 This project provides a sample **RPK (Resource Package) skill plugin** for [TizenClaw](https://github.com/hjhun/tizenclaw), the AI-powered agent daemon for Tizen OS. It demonstrates how to create skill tools in multiple runtimes that TizenClaw's LLM agent can invoke to query device information.
 
-RPK skill plugins are distributed as Tizen resource packages and run in **sandboxed containers** managed by TizenClaw's `SkillPluginManager`. Each skill includes a **manifest.json** that defines the LLM tool schema (name, description, parameters) and an entry point script or binary.
+RPK skill plugins are distributed as Tizen resource packages and run in **sandboxed containers** managed by TizenClaw's `SkillPluginManager`. Each skill includes a **SKILL.md** (Anthropic standard format) that defines the skill's name, description, and documentation, along with an entry point script or binary.
 
 ### Included Skills
 
@@ -117,7 +117,7 @@ TizenClaw discovers RPK skill plugins through Tizen's package metadata system:
 
 1. **Metadata Declaration** — Skills are registered in `tizen-manifest.xml` with the `http://tizen.org/metadata/tizenclaw/skill` metadata key
 2. **Plugin Discovery** — TizenClaw's `SkillPluginManager` scans installed packages for this metadata via `pkgmgrinfo_appinfo_metadata_filter`
-3. **Skill Loading** — Each skill directory's `manifest.json` is read to extract the LLM tool schema
+3. **Skill Loading** — Each skill directory's `SKILL.md` (Anthropic standard) is read to extract the tool schema, with `manifest.json` as a legacy fallback
 4. **LLM Integration** — Tool schemas are registered as available tools, enabling the agent to invoke skills via the appropriate runtime executor (Python, Node.js, or native binary)
 
 ### Skill Execution Flow
@@ -140,15 +140,19 @@ User query → LLM selects skill → SkillPluginManager routes to runtime
 tizenclaw-skill-plugin-sample/
 ├── lib/
 │   ├── get_sample_info/              # Skill ① (Python)
-│   │   ├── manifest.json             # LLM tool schema
+│   │   ├── SKILL.md                  # Anthropic standard skill descriptor
+│   │   ├── manifest.json             # Legacy fallback (optional)
 │   │   └── skill.py                  # Skill implementation
 │   ├── get_sample_status/            # Skill ② (Python)
+│   │   ├── SKILL.md
 │   │   ├── manifest.json
 │   │   └── skill.py
 │   ├── get_sample_time_node/         # Skill ③ (Node.js)
+│   │   ├── SKILL.md
 │   │   ├── manifest.json
 │   │   └── skill.js
 │   └── get_sample_load_native/       # Skill ④ (Native C++)
+│       ├── SKILL.md
 │       ├── manifest.json
 │       └── main.cc
 ├── packaging/
@@ -162,6 +166,32 @@ tizenclaw-skill-plugin-sample/
 ├── CMakeLists.txt
 ├── deploy.sh                         # Automated build & deploy script
 └── README.md
+```
+
+### SKILL.md Format (Anthropic Standard)
+
+Each skill uses the Anthropic standard `SKILL.md` format — only `name` and `description` in YAML frontmatter, with Markdown documentation in the body:
+
+```markdown
+---
+name: get_sample_info
+description: Get sample device information including device name, OS version, and uptime
+---
+
+# Get Sample Info
+
+Returns basic device information by reading platform metadata.
+
+## Parameters
+
+This skill requires no input parameters.
+
+## Output
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `device_name` | string | Device hostname |
+| `os_version` | string | OS platform string |
 ```
 
 ---
